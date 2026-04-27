@@ -54,8 +54,7 @@
 <script>
   const API_URL = window.location.origin;
   const SESSION_ID = 'session_' + Math.random().toString(36).substr(2, 9);
-  const WELCOME = "Bonjour ! Je suis l'assistant du Salon Élégance 💇‍♀️ Comment puis-je vous aider ?";
-
+const WELCOME = "Bonjour ! Bienvenue chez Prestige ✂️ Salon de coiffure à Albertville depuis 1942. Comment puis-je vous aider ?";
   window.onload = () => {
     addMessage(WELCOME, 'bot');
     document.getElementById('userInput').addEventListener('keypress', e => {
