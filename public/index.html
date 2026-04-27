@@ -163,7 +163,30 @@
       transition: all .2s;
     }
 
-    .qr-btn:hover {
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-self: flex-start;
+      max-width: 90%;
+    }
+
+    .sug-btn {
+      background: transparent;
+      border: 1px solid #c9a96e44;
+      color: #c9a96e;
+      padding: 6px 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .sug-btn:hover {
+      background: #c9a96e22;
+      border-color: #c9a96e;
+    }.qr-btn:hover {
       border-color: #c9a96e;
       color: #c9a96e;
     }
@@ -259,8 +282,53 @@
     return text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">→ Prendre RDV</a>');
   }
 
-  function addMessage(text, type) {
+function addMessage(text, type) {
     const msgs = document.getElementById('messages');
+    const div = document.createElement('div');
+    div.className = `msg ${type}`;
+    div.innerHTML = linkify(text);
+    msgs.appendChild(div);
+
+    // Suggestions dynamiques après message bot
+    if (type === 'bot') {
+      const suggestions = getSuggestions(text);
+      if (suggestions.length > 0) {
+        const sugDiv = document.createElement('div');
+        sugDiv.className = 'suggestions';
+        suggestions.forEach(s => {
+          const btn = document.createElement('button');
+          btn.className = 'sug-btn';
+          btn.textContent = s;
+          btn.onclick = () => {
+            document.querySelectorAll('.suggestions').forEach(el => el.remove());
+            document.getElementById('userInput').value = s;
+            sendMessage();
+          };
+          sugDiv.appendChild(btn);
+        });
+        msgs.appendChild(sugDiv);
+      }
+    }
+
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function getSuggestions(text) {
+    const t = text.toLowerCase();
+    if (t.includes('service') || t.includes('prestation') || t.includes('intéresse')) {
+      return ['Coupe femme', 'Coupe homme', 'Balayage', 'Coloration', 'Lissage brésilien'];
+    }
+    if (t.includes('rdv') || t.includes('rendez-vous') || t.includes('réserver') || t.includes('planity')) {
+      return ['Prendre RDV maintenant', 'Rappeler mes disponibilités'];
+    }
+    if (t.includes('horaire') || t.includes('ouvert')) {
+      return ['Quels sont vos services ?', 'Je veux prendre rendez-vous'];
+    }
+    if (t.includes('prix') || t.includes('tarif') || t.includes('coût') || t.includes('€')) {
+      return ['Je veux prendre rendez-vous', 'Autres services'];
+    }
+    return ['Je veux prendre rendez-vous', 'Autres questions'];
+  }    const msgs = document.getElementById('messages');
     const div = document.createElement('div');
     div.className = `msg ${type}`;
     div.innerHTML = linkify(text);
