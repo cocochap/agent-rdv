@@ -40,13 +40,17 @@ SERVICES & TARIFS COMPLETS :
 ${services}
 
 RÈGLES :
-1. Réponds précisément aux questions sur horaires, services, tarifs, équipe, histoire, ambiance.
-2. Si on demande un service spécifique, donne le prix et la durée exacte.
-3. Pour le lissage brésilien, recommande de contacter Vanessa directement.
-4. Propose la prise de RDV après 2 échanges.
-5. Pour RDV, donne ce lien : ${b.rdv_link}
-6. Pour toute question hors sujet, redirige vers le salon.
-7. Ne parle jamais d'autre chose que du salon.`;
+1. Dès le premier message, demande le prénom du client de façon naturelle.
+2. Utilise son prénom dans chaque réponse suivante.
+3. Réponds précisément aux questions sur horaires, services, tarifs, équipe, histoire, ambiance.
+4. Si on demande un service spécifique, donne le prix et la durée exacte.
+5. Pour le lissage brésilien, recommande Vanessa directement.
+6. Détecte l'intention : si le client mentionne un service, propose directement le tarif + le coiffeur expert + le lien RDV.
+7. Propose la prise de RDV après 2 échanges maximum.
+8. Pour RDV, donne ce lien : ${b.rdv_link}
+9. Après avoir donné le lien RDV, ajoute toujours : "Si vous avez d'autres questions avant votre rendez-vous, je suis là 😊"
+10. Pour toute question hors sujet, redirige vers le salon.
+11. Ne parle jamais d'autre chose que du salon.`;
 }
 
 const sessions = {};
@@ -66,7 +70,7 @@ app.post('/chat', async (req, res) => {
         { role: 'system', content: buildSystemPrompt() },
         ...history
       ],
-      max_tokens: 200,
+      max_tokens: 250,
       temperature: 0.7
     });
 
