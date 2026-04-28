@@ -23,8 +23,8 @@
     .msg { max-width: 82%; font-size: 13px; line-height: 1.7; letter-spacing: 0.3px; }
     .msg.bot { color: #ccc; align-self: flex-start; padding: 14px 16px; background: #1a1a1a; border-left: 2px solid #c9a96e; }
     .msg.user { color: #0a0a0a; align-self: flex-end; padding: 14px 16px; background: #c9a96e; }
-    .msg a { color: #c9a96e; text-decoration: none; border-bottom: 1px solid #c9a96e44; }
-    .msg.user a { color: #0a0a0a; border-bottom-color: #0a0a0a44; }
+    .msg a { display: inline-block; margin-top: 8px; padding: 10px 20px; background: #c9a96e; color: #0a0a0a; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-family: 'Montserrat', sans-serif; transition: all .2s; }
+    .msg a:hover { background: #b8935a; }
     .typing { display: flex; gap: 5px; padding: 14px 16px; background: #1a1a1a; border-left: 2px solid #c9a96e; align-self: flex-start; }
     .typing span { width: 5px; height: 5px; background: #c9a96e; border-radius: 50%; animation: bounce 1.2s infinite; }
     .typing span:nth-child(2) { animation-delay: .2s; }
@@ -80,16 +80,21 @@
   };
 
   function linkify(text) {
-    return text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">→ Prendre RDV</a>');
+    return text.replace(/(https?:\/\/[^\s]+)/g,
+      '<a href="$1" target="_blank">→ Prendre RDV</a>'
+    );
   }
 
   function getSuggestions(text) {
     const t = text.toLowerCase();
+    if (t.includes('prénom') || t.includes('appelle') || t.includes('nom')) {
+      return [];
+    }
     if (t.includes('service') || t.includes('prestation') || t.includes('intéresse')) {
       return ['Coupe femme', 'Coupe homme', 'Balayage', 'Coloration', 'Lissage brésilien'];
     }
     if (t.includes('rdv') || t.includes('rendez-vous') || t.includes('réserver') || t.includes('planity')) {
-      return ['Prendre RDV maintenant', 'Quels sont vos horaires ?'];
+      return ['Quels sont vos horaires ?', 'Parler à l\'équipe'];
     }
     if (t.includes('horaire') || t.includes('ouvert')) {
       return ['Quels sont vos services ?', 'Je veux prendre rendez-vous'];
@@ -97,7 +102,10 @@
     if (t.includes('prix') || t.includes('tarif') || t.includes('€')) {
       return ['Je veux prendre rendez-vous', 'Autres services'];
     }
-    return ['Je veux prendre rendez-vous', 'Autres questions'];
+    if (t.includes('équipe') || t.includes('coiffeur') || t.includes('vanessa') || t.includes('kévin')) {
+      return ['Je veux prendre rendez-vous', 'Voir les tarifs'];
+    }
+    return ['Je veux prendre rendez-vous', 'Quels sont vos services ?'];
   }
 
   function addMessage(text, type) {
