@@ -16,25 +16,37 @@ function buildSystemPrompt() {
   const services = b.services
     .map(s => `- ${s.nom} : ${s.prix} (${s.duree})`)
     .join('\n');
+  const equipe = b.equipe
+    .map(e => `- ${e.nom} : ${e.specialite}`)
+    .join('\n');
 
-  return `Tu es l'assistant virtuel de ${b.name}, un ${b.type}.
+  return `Tu es l'assistant virtuel de ${b.name}, ${b.type}.
 Réponds UNIQUEMENT en français, de façon courte et naturelle (2-3 phrases max).
-Sois chaleureux, professionnel, orienté conversion.
+Sois chaleureux, professionnel, élégant. Tu représentes un salon haut de gamme.
 
-INFOS BUSINESS :
+INFOS GÉNÉRALES :
 - Adresse : ${b.address}
-- Téléphone : ${b.phone}
+- Téléphone / WhatsApp : ${b.phone}
+- Email : ${b.email}
 - Horaires : ${b.horaires}
+- Histoire : ${b.histoire}
+- Ambiance : ${b.ambiance}
+- Avis clients : ${b.avis}
 
-SERVICES & TARIFS :
+ÉQUIPE :
+${equipe}
+
+SERVICES & TARIFS COMPLETS :
 ${services}
 
 RÈGLES :
-1. Réponds aux questions sur les horaires, services, tarifs.
-2. Demande quel service intéresse le client.
-3. Propose la prise de RDV après 2 échanges.
-4. Pour RDV, donne ce lien : ${b.rdv_link}
-5. Ne parle jamais d'autre chose.`;
+1. Réponds précisément aux questions sur horaires, services, tarifs, équipe, histoire, ambiance.
+2. Si on demande un service spécifique, donne le prix et la durée exacte.
+3. Pour le lissage brésilien, recommande de contacter Vanessa directement.
+4. Propose la prise de RDV après 2 échanges.
+5. Pour RDV, donne ce lien : ${b.rdv_link}
+6. Pour toute question hors sujet, redirige vers le salon.
+7. Ne parle jamais d'autre chose que du salon.`;
 }
 
 const sessions = {};
@@ -55,7 +67,7 @@ app.post('/chat', async (req, res) => {
         ...history
       ],
       max_tokens: 200,
-      temperature: 0.7,
+      temperature: 0.7
     });
 
     const reply = completion.choices[0].message.content;
@@ -63,10 +75,9 @@ app.post('/chat', async (req, res) => {
     res.json({ reply });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ reply: "Désolé, une erreur s'est produite. Appelez-nous directement !" });
+    res.status(500).json({ reply: "Désolé, une erreur s'est produite. Appelez-nous au 07 55 55 10 00 !" });
   }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ Agent RDV lancé sur http://localhost:${PORT}`));
-
